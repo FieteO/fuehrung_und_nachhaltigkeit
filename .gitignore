@@ -1,2 +1,4 @@
 *.pdf
 nlp_env
+*.csv
+reports/

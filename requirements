@@ -1,2 +1,11 @@
 spacy
 ipykernel
+pandas
+pdf2image
+pytesseract
+pillow
+numpy
+tqdm
+matplotlib
+wordcloud
+scrapy
