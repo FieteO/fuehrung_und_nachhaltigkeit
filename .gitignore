@@ -2,3 +2,4 @@
 nlp_env
 *.csv
 reports/
+esb_bert/vocab.txt
