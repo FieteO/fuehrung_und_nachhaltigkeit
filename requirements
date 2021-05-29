@@ -10,3 +10,4 @@ matplotlib
 wordcloud
 scrapy
 langdetect
+sklearn
