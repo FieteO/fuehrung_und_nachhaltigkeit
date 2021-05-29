@@ -42,7 +42,7 @@ Move it into the `model_store` folder.
 
 ## Try it out
 ``` bash
-(nlp_env) fiete@ubu:~/Documents/studium/fuehrung_und_nachhaltigkeit/esg_bert$ curl -X POST http://127.0.0.1:8080/predictions/bert -T predict.txt
+(nlp_env) fiete@ubu:~/Documents/studium/fuehrung_und_nachhaltigkeit/esg_bert$ curl -X POST http://127.0.0.1:8080/predictions/bert -T input_files/deutsche-boerse.txt
 3
 ```
 This can be mapped to the following labels

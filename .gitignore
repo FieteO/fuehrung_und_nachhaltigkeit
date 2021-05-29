@@ -6,6 +6,9 @@ esg_bert/vocab.txt
 esg_bert/bert_model
 esg_bert/bert_env
 esg_bert/model_store
+esg_bert/logs
+esg_bert/input_files/*.txt
+esg_bert/logs
 
 # scrapy
 scrapy/csr_reports/csr_reports/__pycache__
