@@ -2,7 +2,9 @@
 nlp_env
 *.csv
 reports/
-esb_bert/vocab.txt
+esg_bert/vocab.txt
+esg_bert/bert_model
+esg_bert/bert_env
 
 # scrapy
 scrapy/csr_reports/csr_reports/__pycache__

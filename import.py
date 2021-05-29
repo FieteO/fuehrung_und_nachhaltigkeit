@@ -5,88 +5,110 @@ from pdf2image import convert_from_path
 # from tqdm.notebook import tqdm
 import pandas as pd
 from multiprocessing import cpu_count, Pool
-from pytesseract import image_to_string
 import numpy as np
+# https://github.com/sirfz/tesserocr/issues/205
+# https://gist.github.com/arocketman/b74050b87a2c763e3023a1142dd70090
+import concurrent.futures
+import queue
+import time
 
+import tesserocr
+from pdf2image import convert_from_bytes
 from langdetect import detect
 
-path = './reports'
+tesserocr_queue = queue.Queue()
 
-def get_filepaths():
+def get_filepaths(path):
+    pdf_filepaths = []
     for root, directories, files in os.walk(path, topdown=False):
         for name in files:
             if name[-4:] == '.pdf':
                 pdf_filepaths.append(os.path.join(root, name))
     return pdf_filepaths
 
-pdf_filepaths = get_filepaths()
-reports = pd.DataFrame(pdf_filepaths, columns = ['filepath'])
-reports.head()
-
-# https://towardsdatascience.com/extracting-text-from-scanned-pdf-using-pytesseract-open-cv-cd670ee38052
-# https://pdf2image.readthedocs.io/en/latest/reference.html
-# this is also getting the page number because of performance reasons
-def save_as_image(filepath):
-    pages = convert_from_path(filepath)
-    for p in range(len(pages)):
-        path = filepath[:-4] + '_' + str(p) + '.jpg'
-        # only save if file does not exist
-        if (os.path.isfile(path) == False):
-            pages[p].save(path, 'JPEG')
-        else:
-            break
-    return len(pages)
-
-if (True):
-    #reports['number_of_pages'] = reports['filepath'].apply(lambda fp: save_as_image(fp))
-    reports['number_of_pages'] = reports.filepath.map(save_as_image)
-
 def get_language(path):
-        miner_text = ''
+        text = ''
         for p in range(0,5):
             image_path = path[:-4] + '_' + str(p) + '.jpg'
             if os.path.isfile(image_path):
-                miner_text += image_to_string(image_path)
+                if len(text) <= 500:
+                    text += tesserocr.file_to_text(image_path)
+                else:
+                    print('Reached required number of words for language detection after ' + str(p) + ' pages.')
+                    break
             else:
                 break
-        return detect(miner_text[:500]) # returns i.e en or de
+        return detect(text[:500]) # returns i.e en or de
 
-def text_from_ocr(df) -> pd.DataFrame:
-    rows = len(df)
-    #for index, row in df.iterrows():
-    for index, row in df.iterrows():
-        print(str(index)+'/'+str(rows) + ' Pdf')
-        text = ''
-        # get initial text to apply language detection to
-        pages = row['number_of_pages']
-        for page in range(pages):
-            print(str(page)+'/'+ str(pages) + 'Pages')
-            text += image_to_string(row['filepath'][:-4] + '_' + str(page) + '.jpg', lang=row['lang'])
-        df.loc[index, 'text'] = text
-        print(index)
-    return df
 
-# https://towardsdatascience.com/make-your-own-super-pandas-using-multiproc-1c04f41944a1#6028
-def parallelize_dataframe(df, func, n_cores=4):
-    df_split = np.array_split(df, n_cores)
-    pool = Pool(n_cores)
-    df = pd.concat(pool.map(func, df_split))
-    pool.close()
-    pool.join()
-    return df
+def perform_ocr(img):
+    tess_api = None
+    try:
+        tess_api = tesserocr_queue.get(block=True, timeout=300)
+        tess_api.SetImage(img)
+        text = tess_api.GetUTF8Text()
+        return text
+    except tesserocr_queue.Empty:
+        print('Empty exception caught!')
+        return None
+    finally:
+        if tess_api is not None:
+            tesserocr_queue.put(tess_api)
 
-# Identify language based on sample of pages
-reports['lang'] = reports['filepath'].map(get_language)
-# Map language codes to be tesseract compatible
-reports.lang = reports.lang.map({'en':'eng','de':'deu'})
 
-reports_de = parallelize_dataframe(reports[(reports['lang'] == 'deu')], text_from_ocr, len(os.sched_getaffinity(0)))
-reports_de.to_csv('reports_de.csv')
-print('Saved german reports')
-reports_en = parallelize_dataframe(reports[(reports['lang'] == 'eng')], text_from_ocr, len(os.sched_getaffinity(0)))
-reports_en.to_csv('reports_en.csv')
-print('Saved english texts')
+def run_threaded_ocr_on_pdf(ocr_images, num_threads, language):
+    # Setup Queue
+    for _ in range(num_threads):
+        tesserocr_queue.put(tesserocr.PyTessBaseAPI(lang=language))
 
-reports_joined = reports_de.append(reports_en)
-reports_joined.to_csv('reports_joined.csv')
-reports.to_csv('reports.csv')
+    # Perform OCR using ThreadPoolExecutor
+    start = time.time()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
+        res = executor.map(perform_ocr, ocr_images)
+    end = time.time()
+
+    # Restoring queue
+    for _ in range(num_threads):
+        api = tesserocr_queue.get(block=True)
+        api.End()
+
+    tesserocr_queue.queue.clear()
+    return (res, end - start)
+
+def ocr_pdf(filepath, language, threads):
+    # Pdf to image
+    with open(filepath, 'rb') as raw_pdf:
+        ocr_entities = convert_from_bytes(raw_pdf.read(), dpi=300, thread_count=4, grayscale=True)
+
+    print(f'Starting OCR for file { os.path.basename(filepath) }')
+    result_iterator, total_time = run_threaded_ocr_on_pdf(ocr_entities, threads, language)
+
+    text = ''
+    number_of_pages = sum(1 for item in result_iterator)
+    for item in result_iterator:
+        text += item
+    
+    print(f'OCR finished in {str(total_time)} seconds with an average of {str(total_time / number_of_pages)} seconds per page.')
+    print('Text: ' + text)
+    return (text, number_of_pages)
+
+
+if __name__ == '__main__':
+    # check optimal number of threads with tesser_perf.py
+    threads = 8
+    root = './reports'
+    # Initialize dataframe with filepaths
+    reports = pd.DataFrame(get_filepaths(root), columns = ['filepath'])
+
+    # Identify language based on sample of pages
+    reports['lang'] = reports['filepath'].map(get_language)
+    reports.lang = reports.lang.map({'en':'eng','de':'deu'})
+    reports = reports.sort_values(by='lang')
+    reports.reset_index(drop=True, inplace=True)
+    
+    for index, row in reports.iterrows():
+        text, number_of_pages = ocr_pdf(row.filepath, row.lang ,threads)
+        reports.loc[index, 'text'] = text
+        reports.loc[index, 'number_of_pages'] = number_of_pages
+
+    reports.to_csv('reports.csv')
