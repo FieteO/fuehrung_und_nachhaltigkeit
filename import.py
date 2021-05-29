@@ -84,12 +84,12 @@ def ocr_pdf(filepath, language, threads):
     result_iterator, total_time = run_threaded_ocr_on_pdf(ocr_entities, threads, language)
 
     text = ''
-    number_of_pages = sum(1 for item in result_iterator)
+    number_of_pages = 0
     for item in result_iterator:
         text += item
+        number_of_pages += 1
     
     print(f'OCR finished in {str(total_time)} seconds with an average of {str(total_time / number_of_pages)} seconds per page.')
-    print('Text: ' + text)
     return (text, number_of_pages)
 
 
@@ -111,4 +111,6 @@ if __name__ == '__main__':
         reports.loc[index, 'text'] = text
         reports.loc[index, 'number_of_pages'] = number_of_pages
 
+    reports.number_of_pages = reports.number_of_pages.astype(int)   # is decimal otherwise
+    print(reports.head())
     reports.to_csv('reports.csv')
