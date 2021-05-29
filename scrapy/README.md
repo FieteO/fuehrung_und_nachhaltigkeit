@@ -56,3 +56,8 @@ fiete@ubu:~/Documents/studium/fuehrung_und_nachhaltigkeit/scrapy/csr_reports$ tr
 
 ## Run the spider
 `scrapy crawl example`
+``` bash
+(nlp_env) fiete@ubu:~/Documents/studium/fuehrung_und_nachhaltigkeit/scrapy/csr_reports$ scrapy crawl dax_csr_reports
+2021-05-29 13:36:25 [scrapy.utils.log] INFO: Scrapy 2.5.0 started (bot: csr_reports)
+...
+```

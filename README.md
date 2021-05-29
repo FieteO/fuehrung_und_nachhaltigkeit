@@ -17,3 +17,5 @@
 ## Download language models for spacy (see [Trained Models & Pipelines](https://spacy.io/models))
 `python -m spacy download en_core_web_sm`
 `python -m spacy download de_core_news_sm`
+
+## [Tesserocr table detection](https://stackoverflow.com/questions/59135975/need-help-in-table-detection-using-tesserocr-python)

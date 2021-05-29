@@ -4,7 +4,8 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import scrapy
-from scrapy.loader.processors import TakeFirst, MapCompose
+# from scrapy.loader.processors import TakeFirst, MapCompose
+from itemloaders.processors import MapCompose, TakeFirst
 from os.path import splitext
 
 def remove_extension(file):

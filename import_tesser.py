@@ -5,7 +5,7 @@ from pdf2image import convert_from_path
 # from tqdm.notebook import tqdm
 import pandas as pd
 from multiprocessing import cpu_count, Pool
-from pytesseract import image_to_string
+import tesserocr
 import numpy as np
 
 from langdetect import detect
@@ -13,15 +13,12 @@ from langdetect import detect
 path = './reports'
 
 def get_filepaths():
+    pdf_filepaths = []
     for root, directories, files in os.walk(path, topdown=False):
         for name in files:
             if name[-4:] == '.pdf':
                 pdf_filepaths.append(os.path.join(root, name))
     return pdf_filepaths
-
-pdf_filepaths = get_filepaths()
-reports = pd.DataFrame(pdf_filepaths, columns = ['filepath'])
-reports.head()
 
 # https://towardsdatascience.com/extracting-text-from-scanned-pdf-using-pytesseract-open-cv-cd670ee38052
 # https://pdf2image.readthedocs.io/en/latest/reference.html
@@ -37,19 +34,18 @@ def save_as_image(filepath):
             break
     return len(pages)
 
-if (True):
-    #reports['number_of_pages'] = reports['filepath'].apply(lambda fp: save_as_image(fp))
-    reports['number_of_pages'] = reports.filepath.map(save_as_image)
-
 def get_language(path):
-        miner_text = ''
+        text = ''
         for p in range(0,5):
             image_path = path[:-4] + '_' + str(p) + '.jpg'
             if os.path.isfile(image_path):
-                miner_text += image_to_string(image_path)
+                # pil_image = Image.open(image_path)
+                # tess_api.SetImage(pil_image)
+                # text += tess_api.GetUTF8Text()
+                text += tesserocr.file_to_text(image_path)
             else:
                 break
-        return detect(miner_text[:500]) # returns i.e en or de
+        return detect(text[:500]) # returns i.e en or de
 
 def text_from_ocr(df) -> pd.DataFrame:
     rows = len(df)
@@ -59,9 +55,11 @@ def text_from_ocr(df) -> pd.DataFrame:
         text = ''
         # get initial text to apply language detection to
         pages = row['number_of_pages']
+        lang = row.lang
         for page in range(pages):
             print(str(page)+'/'+ str(pages) + 'Pages')
-            text += image_to_string(row['filepath'][:-4] + '_' + str(page) + '.jpg', lang=row['lang'])
+            filepath = row['filepath'][:-4] + '_' + str(page) + '.jpg'
+            text += tesserocr.file_to_text(filepath, lang=lang)
         df.loc[index, 'text'] = text
         print(index)
     return df
@@ -75,8 +73,18 @@ def parallelize_dataframe(df, func, n_cores=4):
     pool.join()
     return df
 
+# Initialize dataframe with filepaths
+reports = pd.DataFrame(get_filepaths(), columns = ['filepath'])
+reports.head()
+
+# convert pdfs to images and save number of pages in a column
+if (True):
+    #reports['number_of_pages'] = reports['filepath'].apply(lambda fp: save_as_image(fp))
+    reports['number_of_pages'] = reports.filepath.map(save_as_image)
+
 # Identify language based on sample of pages
 reports['lang'] = reports['filepath'].map(get_language)
+
 # Map language codes to be tesseract compatible
 reports.lang = reports.lang.map({'en':'eng','de':'deu'})
 
@@ -88,5 +96,5 @@ reports_en.to_csv('reports_en.csv')
 print('Saved english texts')
 
 reports_joined = reports_de.append(reports_en)
-reports_joined.to_csv('reports_joined.csv')
-reports.to_csv('reports.csv')
+reports_joined.to_csv('reports_tesser.csv')
+#reports.to_csv('reports.csv')
