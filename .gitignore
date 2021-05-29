@@ -3,3 +3,7 @@ nlp_env
 *.csv
 reports/
 esb_bert/vocab.txt
+
+# scrapy
+scrapy/csr_reports/csr_reports/__pycache__
+scrapy/csr_reports/csr_reports/spiders/__pycache__
