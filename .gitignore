@@ -5,6 +5,7 @@ reports/
 esg_bert/vocab.txt
 esg_bert/bert_model
 esg_bert/bert_env
+esg_bert/model_store
 
 # scrapy
 scrapy/csr_reports/csr_reports/__pycache__

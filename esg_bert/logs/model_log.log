@@ -1,0 +1,57 @@
+2021-05-29 19:55:42,811 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9007
+2021-05-29 19:55:42,816 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - [PID]20288
+2021-05-29 19:55:42,818 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:42,820 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:42,911 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9007.
+2021-05-29 19:55:42,962 [INFO ] W-9005-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9005
+2021-05-29 19:55:42,964 [INFO ] W-9005-bert_1.0-stdout MODEL_LOG - [PID]20289
+2021-05-29 19:55:42,965 [INFO ] W-9005-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:42,968 [INFO ] W-9005-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:42,989 [INFO ] W-9005-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9005.
+2021-05-29 19:55:43,010 [INFO ] W-9002-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9002
+2021-05-29 19:55:43,021 [INFO ] W-9002-bert_1.0-stdout MODEL_LOG - [PID]20286
+2021-05-29 19:55:43,022 [INFO ] W-9002-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:43,023 [INFO ] W-9002-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:43,067 [INFO ] W-9003-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9003
+2021-05-29 19:55:43,068 [INFO ] W-9003-bert_1.0-stdout MODEL_LOG - [PID]20287
+2021-05-29 19:55:43,070 [INFO ] W-9003-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:43,070 [INFO ] W-9003-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:43,089 [INFO ] W-9002-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9002.
+2021-05-29 19:55:43,092 [INFO ] W-9003-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9003.
+2021-05-29 19:55:43,131 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9004
+2021-05-29 19:55:43,137 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - [PID]20290
+2021-05-29 19:55:43,139 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:43,140 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:43,163 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9004.
+2021-05-29 19:55:43,198 [INFO ] W-9000-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9000
+2021-05-29 19:55:43,218 [INFO ] W-9006-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9006
+2021-05-29 19:55:43,218 [INFO ] W-9000-bert_1.0-stdout MODEL_LOG - [PID]20292
+2021-05-29 19:55:43,218 [INFO ] W-9000-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:43,218 [INFO ] W-9006-bert_1.0-stdout MODEL_LOG - [PID]20293
+2021-05-29 19:55:43,218 [INFO ] W-9006-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:43,219 [INFO ] W-9006-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:43,221 [INFO ] W-9000-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:43,244 [INFO ] W-9000-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9000.
+2021-05-29 19:55:43,250 [INFO ] W-9006-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9006.
+2021-05-29 19:55:43,306 [INFO ] W-9001-bert_1.0-stdout MODEL_LOG - Listening on port: /tmp/.ts.sock.9001
+2021-05-29 19:55:43,307 [INFO ] W-9001-bert_1.0-stdout MODEL_LOG - [PID]20291
+2021-05-29 19:55:43,308 [INFO ] W-9001-bert_1.0-stdout MODEL_LOG - Torch worker started.
+2021-05-29 19:55:43,309 [INFO ] W-9001-bert_1.0-stdout MODEL_LOG - Python runtime: 3.8.5
+2021-05-29 19:55:43,371 [INFO ] W-9001-bert_1.0-stdout MODEL_LOG - Connection accepted: /tmp/.ts.sock.9001.
+2021-05-29 19:55:47,333 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:55:47,846 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:55:47,857 [INFO ] W-9000-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:55:47,897 [INFO ] W-9005-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:55:48,029 [INFO ] W-9002-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:55:48,165 [INFO ] W-9003-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:55:48,311 [INFO ] W-9006-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:55:48,456 [INFO ] W-9001-bert_1.0-stdout MODEL_LOG - Missing the index_to_name.json file. Inference output will not include class name.
+2021-05-29 19:57:20,579 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Received text: 'Will this sentence be mapped to some topic related to sustainability? Or perhaps to business?'
+2021-05-29 19:57:20,790 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Model predicted: '3'
+2021-05-29 19:58:28,593 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Received text: 'Will this sentence be mapped to some topic related to sustainability? Or perhaps to business?'
+2021-05-29 19:58:28,758 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Model predicted: '3'
+2021-05-29 20:00:44,948 [INFO ] W-9007-bert_1.0-stdout MODEL_LOG - Frontend disconnected.
+2021-05-29 20:00:44,970 [INFO ] W-9004-bert_1.0-stdout MODEL_LOG - Frontend disconnected.
+2021-05-29 20:00:44,982 [INFO ] W-9003-bert_1.0-stdout MODEL_LOG - Frontend disconnected.
+2021-05-29 20:00:44,995 [INFO ] W-9002-bert_1.0-stdout MODEL_LOG - Frontend disconnected.
+2021-05-29 20:00:45,009 [INFO ] W-9001-bert_1.0-stdout MODEL_LOG - Frontend disconnected.
