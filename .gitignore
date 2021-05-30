@@ -2,6 +2,9 @@
 nlp_env
 *.csv
 reports/
+intro_to_nlp.ipynb
+
+# esg_bert
 esg_bert/vocab.txt
 esg_bert/bert_model
 esg_bert/bert_env

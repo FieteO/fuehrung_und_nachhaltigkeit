@@ -1,3 +1,20 @@
+## Directory structure
+``` bash
+fiete@ubu:~/Documents/studium/fuehrung_und_nachhaltigkeit$ tree -L 1 --dirsfirst
+.
+├── esg_bert                # esg classifier based on the BERT model
+├── nlp_env                 # python environment
+├── reports                 # scrapy output dir for the esg reports
+├── scrapy                  # contains the scrapy spider
+├── csr.ipynb               # analysis based on spacy
+├── import.ipynb            # jupyter notebook that ocr's the pdfs (use interchangeably with .py version)
+├── import.py               # plain python file that ocr's the pdfs (use interchangeably with .ipynb version)
+├── lda.ipynb               # topic modelling analysis based on LDA
+├── README.md
+├── requirements
+└── tesser_perf.py          # Can be used to test optimal number of threads for OCR
+```
+
 ## Create a virtual environment
 `virtualenv nlp_env`
 
