@@ -1,2 +1,0 @@
-2021-05-29 19:57:20,790 - PredictionTime.Milliseconds:210.39|#ModelName:bert,Level:Model|#hostname:ubu,requestID:13810d2f-a1a7-44db-8798-80feff7c515a,timestamp:1622311040
-2021-05-29 19:58:28,759 - PredictionTime.Milliseconds:165.95|#ModelName:bert,Level:Model|#hostname:ubu,requestID:492d3966-bd8c-4a33-b9f4-a5b25abdd4dc,timestamp:1622311108
