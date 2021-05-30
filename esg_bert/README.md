@@ -34,7 +34,10 @@
 Download the model data from [here](https://drive.google.com/drive/folders/1Qz4HP3xkjLfJ6DGCFNeJ7GmcPq65_HVe) and save all files in the `bert_model` directory.
 
 ## Generate a .mar file based on the pytorch_model.bin
-`torch-model-archiver --model-name "bert" --version 1.0 --serialized-file ./bert_model/pytorch_model.bin --extra-files "./bert_model/config.json,./bert_model/vocab.txt,./bert_model/index_to_name.json" --handler "./bert_handler.py" --export-path "model_store/"`  
+Create a `model_store` directory and then run
+``` bash
+torch-model-archiver --model-name "bert" --version 1.0 --serialized-file ./bert_model/pytorch_model.bin --extra-files "./bert_model/config.json,./bert_model/vocab.txt,./bert_model/index_to_name.json" --handler "./bert_handler.py" --export-path "model_store/"
+```
 
 ## Start the torchserve server
 `torchserve --start --model-store model_store --models bert=bert.mar`
