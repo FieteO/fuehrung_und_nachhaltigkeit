@@ -60,6 +60,7 @@ class TransformersClassifierHandler(BaseHandler, ABC):
         inputs = self.tokenizer.encode_plus(
             sentences,
             add_special_tokens=True,
+            truncation=True,
             return_tensors="pt"
         )
         return inputs

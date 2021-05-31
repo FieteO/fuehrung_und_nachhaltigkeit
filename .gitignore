@@ -6,9 +6,10 @@ intro_to_nlp.ipynb
 
 # esg_bert
 esg_bert/vocab.txt
-esg_bert/bert_model
-esg_bert/bert_env
-esg_bert/model_store
+esg_bert/bert_model/*
+!esg_bert/bert_model/index_to_name.json
+esg_bert/bert_env/*
+esg_bert/model_store/*
 esg_bert/logs
 esg_bert/input_files/*.txt
 esg_bert/logs
