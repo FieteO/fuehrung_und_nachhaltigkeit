@@ -1,76 +1,50 @@
-from typing import Tuple
-import torch
-from transformers import AutoTokenizer, AutoModelForQuestionAnswering
-import transformers
+from typing import TypedDict, List
+# import torch
+from transformers import AutoTokenizer, LongformerTokenizerFast, pipeline, QuestionAnsweringPipeline
 
+pretrained_model = "valhalla/longformer-base-4096-finetuned-squadv1"
 filepath = 'reports/siemens_report'
+company = "Siemens"
+questions = [
+    # f"Does { company } commit to cut it's carbon emissions?",
+    f"When will { company } be carbon neutral?",
+    # f"How many women are in leading positions at { company }?",
+    # f"Does { company } work on establishing an inclusive company culture?",
+    # f"Does { company } commit to exclusively use green energy in the future?",
+]
+number_of_answers=3
+
 # Read text
 with open(filepath) as file:
     text = file.read()
 
 text = text.replace(r"\n"," ")
 
-pretrained_model = "valhalla/longformer-base-4096-finetuned-squadv1"
-
-# Initialize the tokenizer
-tokenizer: transformers.LongformerTokenizerFast = AutoTokenizer.from_pretrained(pretrained_model)
-
 # Initialize the model
-# model = AutoModelForQuestionAnswering.from_pretrained(pretrained_model)
-answering_pipeline = transformers.pipeline('question-answering', model=pretrained_model, tokenizer=pretrained_model)
+# https://huggingface.co/transformers/main_classes/pipelines.html
+answering_pipeline = pipeline('question-answering', model=pretrained_model, tokenizer=pretrained_model)     
+            
+# Dictionary as returned by calling answering_pipeline()
+Result = TypedDict('Result', {'score':float, 'start':int, 'end':int, 'answer':str})
 
-def answer_question(question, text):
-    answers = []
-    text = text.split()
-    chunk_size = 1800
-    text = text[:round(len(text)/9)]
-    # print("Iterations: " + str(round(len(text) / chunk_size)))
-    for i in range(0, len(text), chunk_size):
-        if i+chunk_size < len(text):
-            chunk = ' '.join(text[i:i+chunk_size])
-            #print("Extected token length: " + str(len(tokenizer.encode(chunk))))
-        else:
-            chunk = ' '.join(text[i:len(text)])
+# https://huggingface.co/transformers/main_classes/pipelines.html#transformers.QuestionAnsweringPipeline.__call__
+results: List[Result] = answering_pipeline(question=questions, context=text, topk=number_of_answers, max_seq_len=4096, max_answer_len=20)
 
-        if len(tokenizer.encode(question)) + len(tokenizer.encode(chunk)) <= 4096:
+# for result in results:
+#     print(result)
+#     print(result['answer'])
+#     print(result['score'])
 
-            result = answering_pipeline(question=question, context=chunk)
-            answer = result['answer']
-            confidence = result['score']
+import math
 
-            if confidence > .75:
-                answers.append((answer, confidence))
-    return answers
-        
-
-company = "Siemens"
-questions = [
-    f"Does { company } commit to cut it's carbon emissions?",
-    f"When will { company } be carbon neutral?",
-    f"How many women are in leading positions at { company }?",
-    f"Will { company } work on establishing an inclusive company culture?",
-    f"Does { company } commit to exclusively use green energy in the future?",
-]
-
-for question in questions:
-    print(question)
-    print(answer_question(question, text))
-
-# question = f"Does { company } commit to cut it's carbon emissions?"
-# print(question)
-# print(answer_question(question, text))
-# question = f"When will { company } be carbon neutral?"
-# print(question)
-# print(answer_question(question, text))
-# question = f"How many women are in leading positions at { company }?"
-# print(question)
-# print(answer_question(question, text))
-# question = f"Will { company } invest in renewable energies?"
-# print(question)
-# print(answer_question(question, text))
-# question = f"Will { company } work on establishing an inclusive company culture?"
-# print(question)
-# print(answer_question(question, text))
-# question = f"Does { company } commit to exclusively use green energy in the future?"
-# print(question)
-# print(answer_question(question, text))
+for i in range(len(results)):
+    q = math.trunc(i/number_of_answers) # number that increases only every fifth i (0.2 -> 0, ..., 0.8 -> 0, 1 -> 1)
+    # print the question only once for each answer block
+    if i % number_of_answers == 0:
+        print(questions[q])
+        print("-"*50)
+    result = results[i]
+    print(result['answer'])
+    #print(str(result['answer']) + " - " + str(result['score']))
+# print(result['answer'])
+# print(result['score'])
