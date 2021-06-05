@@ -1,7 +1,7 @@
 import os
-import pytesseract
+import re
+# import pytesseract
 from PIL import Image
-from pdf2image import convert_from_path
 # from tqdm.notebook import tqdm
 import pandas as pd
 from multiprocessing import cpu_count, Pool
@@ -92,25 +92,46 @@ def ocr_pdf(filepath, language, threads):
     print(f'OCR finished in {str(total_time)} seconds with an average of {str(total_time / number_of_pages)} seconds per page.')
     return (text, number_of_pages)
 
+def clean_text(text: str) -> str:
+    # https://www.kaggle.com/arijzou/text-preprocessing-disaster-tweets
+    url_pattern = r'''(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))'''
+    # https://www.emailregex.com/
+    email_pattern = r'''(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'''
+    text = text.replace("\n"," ")                   # new lines
+    text = " ".join(text.split())                   # consecutive spaces
+    text = re.sub(url_pattern, '', text)            # urls
+    text = re.sub(email_pattern, '', text)          # e-mails
+    text = re.sub(r'[:°<>,="”~{}()!\[\]]','', text)                # meaningless characters
+    text = text.replace(':', '')                    # colons
+    text = text.lower()                             # turn lowercase
+    return text
+
 
 if __name__ == '__main__':
-    # check optimal number of threads with tesser_perf.py
-    threads = 8
-    root = './reports'
-    # Initialize dataframe with filepaths
-    reports = pd.DataFrame(get_filepaths(root), columns = ['filepath'])
+    output_file = 'reports.csv'
+    # read in reports with ocr if csv does not exist already
+    if os.path.isfile(output_file) == False:
+        # check optimal number of threads with tesser_perf.py
+        threads = 8
+        root = './reports'
+        # Initialize dataframe with filepaths
+        reports = pd.DataFrame(get_filepaths(root), columns = ['filepath'])
 
-    # Identify language based on sample of pages
-    reports['lang'] = reports['filepath'].map(get_language)
-    reports.lang = reports.lang.map({'en':'eng','de':'deu'})
-    reports = reports.sort_values(by='lang')
-    reports.reset_index(drop=True, inplace=True)
+        # Identify language based on sample of pages
+        reports['lang'] = reports['filepath'].map(get_language)
+        reports.lang = reports.lang.map({'en':'eng','de':'deu'})
+        reports = reports.sort_values(by='lang')
+        reports.reset_index(drop=True, inplace=True)
+        
+        for index, row in reports.iterrows():
+            text, number_of_pages = ocr_pdf(row.filepath, row.lang ,threads)
+            reports.loc[index, 'text'] = text
+            reports.loc[index, 'number_of_pages'] = number_of_pages
+
+        reports.number_of_pages = reports.number_of_pages.astype(int)   # is decimal otherwise
+        print(reports.head())
+        reports.to_csv(output_file)
     
-    for index, row in reports.iterrows():
-        text, number_of_pages = ocr_pdf(row.filepath, row.lang ,threads)
-        reports.loc[index, 'text'] = text
-        reports.loc[index, 'number_of_pages'] = number_of_pages
-
-    reports.number_of_pages = reports.number_of_pages.astype(int)   # is decimal otherwise
-    print(reports.head())
-    reports.to_csv('reports.csv')
+    reports = pd.read_csv(output_file, index_col=0)
+    reports['text'] = reports['text'].map(clean_text)
+    reports.to_csv(output_file)
