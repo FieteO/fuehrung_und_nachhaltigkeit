@@ -2,7 +2,6 @@ spacy
 ipykernel
 pandas
 pdf2image
-pytesseract
 tesserocr
 pillow
 numpy
