@@ -1,7 +1,8 @@
 import os
 import re
 import pandas as pd
-from typing import Tuple
+from typing import Tuple, List
+import PIL
 # https://github.com/sirfz/tesserocr/issues/205
 # https://gist.github.com/arocketman/b74050b87a2c763e3023a1142dd70090
 import concurrent.futures
@@ -24,15 +25,13 @@ def get_filepaths(path):
 
 def get_language(path):
         text = ''
-        for p in range(0,5):
-            image_path = path[:-4] + '_' + str(p) + '.jpg'
-            if os.path.isfile(image_path):
-                if len(text) <= 500:
-                    text += tesserocr.file_to_text(image_path)
-                else:
-                    print('Reached required number of words for language detection after ' + str(p) + ' pages.')
-                    break
+        with open(path, 'rb') as raw_pdf:
+            ocr_entities = convert_from_bytes(raw_pdf.read(), dpi=300, thread_count=4, grayscale=True) # return List[PIL.Image]
+        for p in range(0,10):
+            if len(text) <= 500:
+                    text += tesserocr.image_to_text(ocr_entities[p])
             else:
+                print('Reached required number of words for language detection after ' + str(p) + ' pages.')
                 break
         return detect(text[:500]) # returns i.e en or de
 
@@ -97,7 +96,7 @@ def clean_text(text: str) -> str:
     text = " ".join(text.split())                   # consecutive spaces
     text = re.sub(url_pattern, '', text)            # urls
     text = re.sub(email_pattern, '', text)          # e-mails
-    text = re.sub(r'[:°<>,="”~{}()!\[\]]','', text)                # meaningless characters
+    text = re.sub(r'[:°<>,="”~{}()!\[\]]','', text) # meaningless characters
     text = text.replace(':', '')                    # colons
     text = text.lower()                             # turn lowercase
     return text
@@ -108,7 +107,7 @@ if __name__ == '__main__':
     # read in reports with ocr if csv does not exist already
     if os.path.isfile(output_file) == False:
         # check optimal number of threads with tesser_perf.py
-        threads = 8
+        threads = 12
         root = './reports'
         # Initialize dataframe with filepaths
         reports = pd.DataFrame(get_filepaths(root), columns = ['filepath'])
@@ -130,4 +129,5 @@ if __name__ == '__main__':
     
     reports = pd.read_csv(output_file, index_col=0)
     reports['text'] = reports['text'].map(clean_text)
+    print(reports.head())
     reports.to_csv(output_file)
