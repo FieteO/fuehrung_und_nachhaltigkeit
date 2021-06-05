@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 import pytesseract
 from PIL import Image
 from pdf2image import convert_from_path
@@ -75,7 +76,7 @@ def run_threaded_ocr_on_pdf(ocr_images, num_threads, language):
     tesserocr_queue.queue.clear()
     return (res, end - start)
 
-def ocr_pdf(filepath, language, threads):
+def ocr_pdf(filepath: str, language: str, threads: int) -> Tuple[str, int]:
     # Pdf to image
     with open(filepath, 'rb') as raw_pdf:
         ocr_entities = convert_from_bytes(raw_pdf.read(), dpi=300, thread_count=4, grayscale=True)
@@ -90,7 +91,7 @@ def ocr_pdf(filepath, language, threads):
         number_of_pages += 1
     
     print(f'OCR finished in {str(total_time)} seconds with an average of {str(total_time / number_of_pages)} seconds per page.')
-    return (text, number_of_pages)
+    return text, number_of_pages
 
 
 if __name__ == '__main__':
