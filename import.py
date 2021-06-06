@@ -99,6 +99,7 @@ def clean_text(text: str) -> str:
     text = re.sub(r'[:°<>,="”~{}()!\[\]]','', text) # meaningless characters
     text = text.replace(':', '')                    # colons
     text = text.lower()                             # turn lowercase
+    text = re.sub('([A-z]+)- ', '\\1')              # there are tons of separated words, i.e environ- ment, leader- ship
     return text
 
 
