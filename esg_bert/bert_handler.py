@@ -61,6 +61,7 @@ class TransformersClassifierHandler(BaseHandler, ABC):
             sentences,
             add_special_tokens=True,
             truncation=True,
+            max_length=510,
             return_tensors="pt"
         )
         return inputs
