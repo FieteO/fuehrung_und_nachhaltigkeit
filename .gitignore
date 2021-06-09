@@ -1,6 +1,7 @@
 *.pdf
 nlp_env
 *.csv
+*.png
 reports/
 intro_to_nlp.ipynb
 
