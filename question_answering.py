@@ -6,11 +6,11 @@ pretrained_model = "valhalla/longformer-base-4096-finetuned-squadv1"
 filepath = 'reports/siemens_report'
 company = "Siemens"
 questions = [
-    # f"Does { company } commit to cut it's carbon emissions?",
+    f"Does { company } commit to cut it's carbon emissions?",
     f"When will { company } be carbon neutral?",
-    # f"How many women are in leading positions at { company }?",
-    # f"Does { company } work on establishing an inclusive company culture?",
-    # f"Does { company } commit to exclusively use green energy in the future?",
+    f"How many women are in leading positions at { company }?",
+    f"Does { company } work on establishing an inclusive company culture?",
+    f"Does { company } commit to exclusively use green energy in the future?",
 ]
 number_of_answers=3
 
