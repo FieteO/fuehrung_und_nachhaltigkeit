@@ -6,13 +6,16 @@ fiete@ubu:~/Documents/studium/fuehrung_und_nachhaltigkeit$ tree -L 1 --dirsfirst
 ├── nlp_env                 # python environment
 ├── reports                 # scrapy output dir for the esg reports
 ├── scrapy                  # contains the scrapy spider
-├── csr.ipynb               # analysis based on spacy
+├── cluster_count.ipynb     # analysis based on the osdg-ontology
 ├── import.ipynb            # jupyter notebook that ocr's the pdfs (use interchangeably with .py version)
 ├── import.py               # plain python file that ocr's the pdfs (use interchangeably with .ipynb version)
 ├── lda.ipynb               # topic modelling analysis based on LDA
+├── OSDG-Ontology.csv
+├── question_answering.py   # Transformer based question answering
 ├── README.md
 ├── requirements
 └── tesser_perf.py          # Can be used to test optimal number of threads for OCR
+└── text_summarization.py   # Transformer based text summarization
 ```
 
 ## Create a virtual environment
@@ -48,6 +51,9 @@ no label, UUID=1ace04d1-f525-4b6f-b323-f61be87b336b
 fiete@ubu:~$ sudo swapon /swapfile
 fiete@ubu:~$ 
 ```
+
+## Run .py files
+`python import.py`
 
 # [NLP Tutorial](https://www.kaggle.com/learn/natural-language-processing)
 
